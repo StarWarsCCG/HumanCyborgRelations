@@ -9,6 +9,7 @@ DownloadDialog::DownloadDialog(QWidget *parent)
     , _completed(false)
 {
     setValue(0);
+    setWindowTitle("File Download");
 }
 
 DownloadDialog::~DownloadDialog()
@@ -40,6 +41,7 @@ bool DownloadDialog::begin(QUrl source, QString destination)
             connect(_download, SIGNAL(readyRead()), SLOT(downloadReadyRead()));
             connect(this, SIGNAL(canceled()), SLOT(dispose()));
 
+            setLabelText("Downloading " + destination);
             show();
 
             result = true;

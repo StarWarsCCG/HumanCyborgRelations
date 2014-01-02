@@ -11,9 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
     DownloadDialog* dd = new DownloadDialog(this);
     dd->begin(QUrl("https://dl.dropboxusercontent.com/u/2999971/swccg.sqlite"),
               "swccg.sqlite");
-
-    //dd->begin(QUrl("http://audio.showmeyournews.com/smyn/SMYN147.mp3"),
-              //"SMYN147.mp3");
 }
 
 MainWindow::~MainWindow()
