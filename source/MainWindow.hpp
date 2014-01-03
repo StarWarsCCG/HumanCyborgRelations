@@ -2,6 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
+#include <QtSql>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QSqlDatabase _database;
+    QSqlQueryModel* _queryModel;
 };
 
-#endif // MAINWINDOW_HPP
+#endif

@@ -17,14 +17,12 @@ class DownloadDialog : public QProgressDialog
     bool _completed;
 
 public:
-    explicit DownloadDialog(QWidget *parent = 0);
+    explicit DownloadDialog(QUrl source, QString destination, QWidget *parent = 0);
     virtual ~DownloadDialog();
 
-    bool begin(QUrl source, QString destination);
-
-    bool completed() const { return _completed; }
-
 signals:
+    void downloadSucceeded();
+    void downloadFailed();
 
 public slots:
 
