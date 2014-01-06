@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
             if (!isLight)
             {
                 item->setBackgroundColor(QColor(224, 224, 224));
+                //item->setBackgroundColor(QColor(64, 64, 64));
+                //item->setTextColor(QColor(255, 255, 255));
             }
         }
 
@@ -61,5 +63,30 @@ void MainWindow::on_cardListWidget_clicked(const QModelIndex &index)
 {
     (void)index;
     auto item = ui->cardListWidget->currentItem();
-    qDebug() << item->data(Qt::UserRole).toLongLong();
+    auto id = item->data(Qt::UserRole).toLongLong();
+    qDebug() << id;
+
+    QString content;
+
+    QSqlQuery query(_database);
+    if (query.prepare("SELECT ta.name,ct.content FROM card_text ct INNER JOIN text_attributes ta ON ct.text_attribute_id = ta.id WHERE card_id = ?"))
+    {
+        query.bindValue(0, id);
+        query.exec();
+
+        while (query.next())
+        {
+            content
+                .append(query.value("name").toString())
+                .append("\n")
+                .append(query.value("content").toString())
+                .append("\n\n");
+        }
+    }
+    else
+    {
+        qDebug() << "Failed to prepare statement";
+    }
+
+    ui->cardTextEdit->setText(content);
 }

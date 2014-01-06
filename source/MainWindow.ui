@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>718</width>
     <height>509</height>
    </rect>
   </property>
@@ -14,9 +14,12 @@
    <string>Human Cyborg Relations 1.0</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QListWidget" name="cardListWidget"/>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="cardTextEdit"/>
     </item>
    </layout>
   </widget>
@@ -25,7 +28,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>718</width>
      <height>21</height>
     </rect>
    </property>

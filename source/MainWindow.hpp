@@ -20,6 +20,8 @@ private slots:
     void on_cardListWidget_clicked(const QModelIndex &index);
 
 private:
+    void loadCard(qint64 id);
+
     Ui::MainWindow *ui;
     QSqlDatabase _database;
 };
