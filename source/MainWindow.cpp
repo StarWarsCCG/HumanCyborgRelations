@@ -1,8 +1,13 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 #include "DownloadDialog.hpp"
+#include <QListWidget>
+#include <QListWidgetItem>
 
 static const QString DatabaseFile("swccg.sqlite");
+static const QString Title("title");
+static const QString Id("id");
+static const QString IsLight("is_light");
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,9 +23,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (_database.open())
     {
-        _queryModel = new QSqlQueryModel(this);
-        _queryModel->setQuery("SELECT * FROM cards");
-        ui->tableView->setModel(_queryModel);
+        QSqlQuery query("SELECT * FROM cards", _database);
+
+        while (query.next())
+        {
+            QString title = query.value(Title).toString();
+            auto id = query.value(Id).toLongLong();
+
+            QListWidgetItem* item =
+                new QListWidgetItem(title, ui->cardListWidget);
+
+            item->setData(Qt::UserRole, id);
+
+            bool isLight = query.value(IsLight).toBool();
+
+            if (!isLight)
+            {
+                item->setBackgroundColor(QColor(224, 224, 224));
+            }
+        }
+
+        ui->cardListWidget->sortItems();
     }
     else
     {
@@ -32,4 +55,11 @@ MainWindow::~MainWindow()
 {
     _database.close();
     delete ui;
+}
+
+void MainWindow::on_cardListWidget_clicked(const QModelIndex &index)
+{
+    (void)index;
+    auto item = ui->cardListWidget->currentItem();
+    qDebug() << item->data(Qt::UserRole).toLongLong();
 }
