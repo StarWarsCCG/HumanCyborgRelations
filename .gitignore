@@ -1,4 +1,4 @@
-# C++ objects and libs
+# C++
 
 *.slo
 *.lo
@@ -10,7 +10,7 @@
 *.dll
 *.dylib
 
-# Qt-es
+# Qt
 
 *.pro.user
 *.pro.user.*
