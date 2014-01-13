@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QtSql>
+#include <QListWidgetItem>
+#include <QTableWidgetItem>
 
 namespace Ui {
 class MainWindow;
@@ -17,10 +19,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_cardListWidget_clicked(const QModelIndex &index);
+    void on_cardTableWidget_currentItemChanged(QTableWidgetItem*,
+        QTableWidgetItem*);
 
 private:
-    void loadCard(qint64 id);
+    void loadCard(const QVariant& id);
 
     Ui::MainWindow *ui;
     QSqlDatabase _database;

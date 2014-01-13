@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>718</width>
+    <width>948</width>
     <height>509</height>
    </rect>
   </property>
@@ -16,10 +16,37 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QListWidget" name="cardListWidget"/>
+     <widget class="QTableWidget" name="cardTableWidget">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="showGrid">
+       <bool>false</bool>
+      </property>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+     </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="cardTextEdit"/>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QTextEdit" name="cardTextEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="cardNumbersTableWidget"/>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -28,7 +55,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>718</width>
+     <width>948</width>
      <height>21</height>
     </rect>
    </property>

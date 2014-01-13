@@ -2,10 +2,10 @@
 #include "ui_MainWindow.h"
 #include "DownloadDialog.hpp"
 #include <QListWidget>
-#include <QListWidgetItem>
 
 static const QString DatabaseFile("swccg.sqlite");
 static const QString Title("title");
+static const QString Name("name");
 static const QString Id("id");
 static const QString IsLight("is_light");
 
@@ -16,6 +16,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->cardTableWidget->setColumnCount(2);
+    ui->cardTableWidget->setHorizontalHeaderItem(0,
+        new QTableWidgetItem("Title"));
+    ui->cardTableWidget->setHorizontalHeaderItem(1,
+        new QTableWidgetItem("Type"));
+    ui->cardTableWidget->verticalHeader()->setDefaultSectionSize(15);
+
     //if (!QFile::exists(DatabaseFile))
         //new DownloadDialog(QUrl("https://dl.dropboxusercontent.com/u/2999971/swccg.sqlite"), DatabaseFile, this);
 
@@ -23,29 +30,41 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (_database.open())
     {
-        QSqlQuery query("SELECT * FROM cards", _database);
+        int row = 0;
+        QSqlQuery query("SELECT c.id, c.title, c.is_light, ct.name"
+                        " FROM cards c"
+                        " INNER JOIN card_types ct"
+                        " ON c.card_type_id = ct.id",
+                        _database);
 
         while (query.next())
         {
             QString title = query.value(Title).toString();
-            auto id = query.value(Id).toLongLong();
+            QString typeName = query.value(Name).toString();
+            auto id = query.value(Id);
 
-            QListWidgetItem* item =
-                new QListWidgetItem(title, ui->cardListWidget);
+            ui->cardTableWidget->setRowCount(row + 1);
 
-            item->setData(Qt::UserRole, id);
+            auto titleItem = new QTableWidgetItem(title);
+            ui->cardTableWidget->setItem(row, 0, titleItem);
+
+            auto typeItem = new QTableWidgetItem(typeName);
+            ui->cardTableWidget->setItem(row++, 1, typeItem);
+
+            titleItem->setData(Qt::UserRole, id);
+            typeItem->setData(Qt::UserRole, id);
 
             bool isLight = query.value(IsLight).toBool();
 
             if (!isLight)
             {
-                item->setBackgroundColor(QColor(224, 224, 224));
-                //item->setBackgroundColor(QColor(64, 64, 64));
-                //item->setTextColor(QColor(255, 255, 255));
+                titleItem->setBackgroundColor(QColor(224, 224, 224));
+                typeItem->setBackgroundColor(QColor(224, 224, 224));
             }
         }
 
-        ui->cardListWidget->sortItems();
+        ui->cardTableWidget->resizeColumnsToContents();
+        ui->cardTableWidget->sortItems(0);
     }
     else
     {
@@ -59,17 +78,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_cardListWidget_clicked(const QModelIndex &index)
+void MainWindow::loadCard(const QVariant& id)
 {
-    (void)index;
-    auto item = ui->cardListWidget->currentItem();
-    auto id = item->data(Qt::UserRole).toLongLong();
     qDebug() << id;
 
     QString content;
 
     QSqlQuery query(_database);
-    if (query.prepare("SELECT ta.name,ct.content FROM card_text ct INNER JOIN text_attributes ta ON ct.text_attribute_id = ta.id WHERE card_id = ?"))
+    if (query.prepare(
+        "SELECT ta.name,ct.content"
+        " FROM card_text ct"
+        " INNER JOIN text_attributes ta"
+        " ON ct.text_attribute_id = ta.id WHERE card_id = ?"))
     {
         query.bindValue(0, id);
         query.exec();
@@ -89,4 +109,12 @@ void MainWindow::on_cardListWidget_clicked(const QModelIndex &index)
     }
 
     ui->cardTextEdit->setText(content);
+}
+
+void MainWindow::on_cardTableWidget_currentItemChanged(QTableWidgetItem*,
+    QTableWidgetItem*)
+{
+    auto item = ui->cardTableWidget->currentIndex();
+    auto id = item.data(Qt::UserRole);
+    loadCard(id);
 }
